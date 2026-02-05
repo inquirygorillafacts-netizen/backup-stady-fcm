@@ -13,7 +13,8 @@ import {
   LogOut,
   Menu,
   X,
-  Crown
+  Crown,
+  Heart
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { authAPI } from '@/lib/api';

@@ -232,12 +232,12 @@ function StudentLayout(param) {
                 className: "animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"
             }, void 0, false, {
                 fileName: "[project]/frontend/src/app/student/layout.tsx",
-                lineNumber: 88,
+                lineNumber: 89,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/frontend/src/app/student/layout.tsx",
-            lineNumber: 87,
+            lineNumber: 88,
             columnNumber: 7
         }, this);
     }
@@ -262,12 +262,12 @@ function StudentLayout(param) {
                                             children: "S"
                                         }, void 0, false, {
                                             fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                            lineNumber: 104,
+                                            lineNumber: 105,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                        lineNumber: 103,
+                                        lineNumber: 104,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -275,30 +275,30 @@ function StudentLayout(param) {
                                         children: "Stady"
                                     }, void 0, false, {
                                         fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                        lineNumber: 106,
+                                        lineNumber: 107,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                lineNumber: 102,
+                                lineNumber: 103,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/frontend/src/app/student/layout.tsx",
-                            lineNumber: 101,
+                            lineNumber: 102,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "px-4 pt-4",
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$src$2f$components$2f$InstallButton$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["InstallButton"], {}, void 0, false, {
                                 fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                lineNumber: 112,
+                                lineNumber: 113,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/frontend/src/app/student/layout.tsx",
-                            lineNumber: 111,
+                            lineNumber: 112,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -314,7 +314,7 @@ function StudentLayout(param) {
                                             className: "w-5 h-5"
                                         }, void 0, false, {
                                             fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                            lineNumber: 130,
+                                            lineNumber: 131,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -322,19 +322,19 @@ function StudentLayout(param) {
                                             children: item.label
                                         }, void 0, false, {
                                             fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                            lineNumber: 131,
+                                            lineNumber: 132,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, item.href, true, {
                                     fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                    lineNumber: 121,
+                                    lineNumber: 122,
                                     columnNumber: 17
                                 }, this);
                             })
                         }, void 0, false, {
                             fileName: "[project]/frontend/src/app/student/layout.tsx",
-                            lineNumber: 116,
+                            lineNumber: 117,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -348,14 +348,14 @@ function StudentLayout(param) {
                                             className: "w-5 h-5"
                                         }, void 0, false, {
                                             fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                            lineNumber: 145,
+                                            lineNumber: 146,
                                             columnNumber: 17
                                         }, this),
                                         "Claim Owner Role"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                    lineNumber: 141,
+                                    lineNumber: 142,
                                     columnNumber: 15
                                 }, this),
                                 isOwner && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -366,14 +366,14 @@ function StudentLayout(param) {
                                             className: "w-5 h-5"
                                         }, void 0, false, {
                                             fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                            lineNumber: 156,
+                                            lineNumber: 157,
                                             columnNumber: 17
                                         }, this),
                                         "Switch to Owner"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                    lineNumber: 152,
+                                    lineNumber: 153,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -384,31 +384,31 @@ function StudentLayout(param) {
                                             className: "w-5 h-5"
                                         }, void 0, false, {
                                             fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                            lineNumber: 166,
+                                            lineNumber: 167,
                                             columnNumber: 15
                                         }, this),
                                         "Sign Out"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                    lineNumber: 162,
+                                    lineNumber: 163,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/frontend/src/app/student/layout.tsx",
-                            lineNumber: 138,
+                            lineNumber: 139,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/frontend/src/app/student/layout.tsx",
-                    lineNumber: 99,
+                    lineNumber: 100,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/frontend/src/app/student/layout.tsx",
-                lineNumber: 98,
+                lineNumber: 99,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -426,12 +426,12 @@ function StudentLayout(param) {
                                         children: "S"
                                     }, void 0, false, {
                                         fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                        lineNumber: 178,
+                                        lineNumber: 179,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                    lineNumber: 177,
+                                    lineNumber: 178,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -439,13 +439,13 @@ function StudentLayout(param) {
                                     children: "Stady"
                                 }, void 0, false, {
                                     fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                    lineNumber: 180,
+                                    lineNumber: 181,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/frontend/src/app/student/layout.tsx",
-                            lineNumber: 176,
+                            lineNumber: 177,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -453,7 +453,7 @@ function StudentLayout(param) {
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$src$2f$components$2f$InstallButton$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["InstallButton"], {}, void 0, false, {
                                     fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                    lineNumber: 183,
+                                    lineNumber: 184,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -463,35 +463,35 @@ function StudentLayout(param) {
                                         className: "w-6 h-6"
                                     }, void 0, false, {
                                         fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                        lineNumber: 188,
+                                        lineNumber: 189,
                                         columnNumber: 30
                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$menu$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Menu$3e$__["Menu"], {
                                         className: "w-6 h-6"
                                     }, void 0, false, {
                                         fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                        lineNumber: 188,
+                                        lineNumber: 189,
                                         columnNumber: 58
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                    lineNumber: 184,
+                                    lineNumber: 185,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/frontend/src/app/student/layout.tsx",
-                            lineNumber: 182,
+                            lineNumber: 183,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/frontend/src/app/student/layout.tsx",
-                    lineNumber: 175,
+                    lineNumber: 176,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/frontend/src/app/student/layout.tsx",
-                lineNumber: 174,
+                lineNumber: 175,
                 columnNumber: 7
             }, this),
             sidebarOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -519,7 +519,7 @@ function StudentLayout(param) {
                                                 className: "w-5 h-5"
                                             }, void 0, false, {
                                                 fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                                lineNumber: 220,
+                                                lineNumber: 221,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -527,19 +527,19 @@ function StudentLayout(param) {
                                                 children: item.label
                                             }, void 0, false, {
                                                 fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                                lineNumber: 221,
+                                                lineNumber: 222,
                                                 columnNumber: 23
                                             }, this)
                                         ]
                                     }, item.href, true, {
                                         fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                        lineNumber: 208,
+                                        lineNumber: 209,
                                         columnNumber: 21
                                     }, this);
                                 })
                             }, void 0, false, {
                                 fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                lineNumber: 203,
+                                lineNumber: 204,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -553,14 +553,14 @@ function StudentLayout(param) {
                                                 className: "w-5 h-5"
                                             }, void 0, false, {
                                                 fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                                lineNumber: 234,
+                                                lineNumber: 235,
                                                 columnNumber: 21
                                             }, this),
                                             "Claim Owner Role"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                        lineNumber: 230,
+                                        lineNumber: 231,
                                         columnNumber: 19
                                     }, this),
                                     isOwner && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -571,14 +571,14 @@ function StudentLayout(param) {
                                                 className: "w-5 h-5"
                                             }, void 0, false, {
                                                 fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                                lineNumber: 243,
+                                                lineNumber: 244,
                                                 columnNumber: 21
                                             }, this),
                                             "Switch to Owner"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                        lineNumber: 239,
+                                        lineNumber: 240,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -589,36 +589,36 @@ function StudentLayout(param) {
                                                 className: "w-5 h-5"
                                             }, void 0, false, {
                                                 fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                                lineNumber: 251,
+                                                lineNumber: 252,
                                                 columnNumber: 19
                                             }, this),
                                             "Sign Out"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                        lineNumber: 247,
+                                        lineNumber: 248,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                lineNumber: 228,
+                                lineNumber: 229,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/frontend/src/app/student/layout.tsx",
-                        lineNumber: 201,
+                        lineNumber: 202,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/frontend/src/app/student/layout.tsx",
-                    lineNumber: 197,
+                    lineNumber: 198,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/frontend/src/app/student/layout.tsx",
-                lineNumber: 196,
+                lineNumber: 197,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -628,12 +628,12 @@ function StudentLayout(param) {
                     children: children
                 }, void 0, false, {
                     fileName: "[project]/frontend/src/app/student/layout.tsx",
-                    lineNumber: 262,
+                    lineNumber: 263,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/frontend/src/app/student/layout.tsx",
-                lineNumber: 261,
+                lineNumber: 262,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -651,7 +651,7 @@ function StudentLayout(param) {
                                     className: "w-5 h-5"
                                 }, void 0, false, {
                                     fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                    lineNumber: 283,
+                                    lineNumber: 284,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -659,30 +659,30 @@ function StudentLayout(param) {
                                     children: item.label
                                 }, void 0, false, {
                                     fileName: "[project]/frontend/src/app/student/layout.tsx",
-                                    lineNumber: 284,
+                                    lineNumber: 285,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, item.href, true, {
                             fileName: "[project]/frontend/src/app/student/layout.tsx",
-                            lineNumber: 274,
+                            lineNumber: 275,
                             columnNumber: 15
                         }, this);
                     })
                 }, void 0, false, {
                     fileName: "[project]/frontend/src/app/student/layout.tsx",
-                    lineNumber: 269,
+                    lineNumber: 270,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/frontend/src/app/student/layout.tsx",
-                lineNumber: 268,
+                lineNumber: 269,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/frontend/src/app/student/layout.tsx",
-        lineNumber: 96,
+        lineNumber: 97,
         columnNumber: 5
     }, this);
 }
