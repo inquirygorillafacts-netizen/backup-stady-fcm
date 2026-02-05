@@ -1,0 +1,298 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light Mode - iOS Style Clean Colors (HSL format) */
+    --background: 240 17% 99%;
+    --foreground: 240 4% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 4% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 4% 11%;
+    
+    /* Primary - Elegant Blue (like iOS) */
+    --primary: 211 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Secondary - Soft Gray */
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 4% 11%;
+    
+    /* Muted - Light Gray */
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 56%;
+    
+    --accent: 240 5% 96%;
+    --accent-foreground: 240 4% 11%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 211 100% 50%;
+    --radius: 12px;
+    
+    /* Custom iOS Colors (RGB for use with rgb() function) */
+    --ios-blue: 0 122 255;
+    --ios-green: 52 199 89;
+    --ios-orange: 255 149 0;
+    --ios-red: 255 59 48;
+    --ios-purple: 175 82 222;
+    --ios-pink: 255 45 85;
+    --ios-yellow: 255 204 0;
+    --ios-teal: 90 200 250;
+  }
+
+  .dark {
+    /* Dark Mode - iOS Style (HSL format) */
+    --background: 0 0% 7%;
+    --foreground: 0 0% 98%;
+    --card: 240 4% 11%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 4% 11%;
+    --popover-foreground: 0 0% 98%;
+    
+    --primary: 211 100% 52%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 240 4% 18%;
+    --secondary-foreground: 0 0% 98%;
+    
+    --muted: 240 4% 18%;
+    --muted-foreground: 240 4% 56%;
+    
+    --accent: 240 4% 18%;
+    --accent-foreground: 0 0% 98%;
+    
+    --destructive: 0 85% 61%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 240 4% 23%;
+    --input: 240 4% 23%;
+    --ring: 211 100% 52%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* iOS-Style Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+/* Custom iOS Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(142, 142, 147, 0.3);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(142, 142, 147, 0.5);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(142, 142, 147, 0.5);
+}
+
+/* Text Selection */
+::selection {
+  background-color: rgba(0, 122, 255, 0.2);
+  color: inherit;
+}
+
+@layer utilities {
+  /* iOS Glass Morphism Effect */
+  .glass {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+  
+  .dark .glass {
+    background: rgba(28, 28, 30, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  /* iOS Card Style */
+  .ios-card {
+    @apply bg-card rounded-2xl shadow-sm border border-border/50;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .ios-card:hover {
+    @apply shadow-lg border-border;
+    transform: translateY(-2px) scale(1.005);
+  }
+
+  /* iOS Button Style */
+  .ios-button {
+    @apply px-6 py-3 rounded-xl font-medium;
+    @apply transition-all duration-200 ease-out;
+    @apply active:scale-95;
+  }
+  
+  .ios-button-primary {
+    @apply ios-button;
+    background: rgb(var(--ios-blue));
+    @apply text-white shadow-sm;
+  }
+  
+  .ios-button-primary:hover {
+    @apply shadow-md;
+    background: rgb(10 132 255);
+  }
+
+  /* Elegant Gradient - Only for accents */
+  .gradient-accent {
+    background: linear-gradient(135deg, 
+      rgb(var(--ios-blue)) 0%, 
+      rgb(var(--ios-teal)) 100%);
+  }
+  
+  .gradient-text {
+    background: linear-gradient(135deg, 
+      rgb(var(--ios-blue)) 0%, 
+      rgb(var(--ios-teal)) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Smooth Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+  
+  .animate-scale-in {
+    animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* iOS Safe Area */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  /* No Scrollbar */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Premium Shadows - Subtle iOS Style */
+  .shadow-premium {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08),
+                0 2px 4px rgba(0, 0, 0, 0.04);
+  }
+  
+  .dark .shadow-premium {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4),
+                0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  /* iOS Blur Background */
+  .blur-bg {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .blur-bg::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+      circle at 30% 20%,
+      rgba(0, 122, 255, 0.08) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 70% 60%,
+      rgba(90, 200, 250, 0.08) 0%,
+      transparent 50%
+    );
+    pointer-events: none;
+  }
+}
