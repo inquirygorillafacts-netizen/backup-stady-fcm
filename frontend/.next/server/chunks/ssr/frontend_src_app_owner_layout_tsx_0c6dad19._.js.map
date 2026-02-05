@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///app/frontend/src/app/owner/layout.tsx"],"sourcesContent":["'use client';\n\nimport { ReactNode } from 'react';\n\nexport default function OwnerLayout({ children }: { children: ReactNode }) {\n  return <>{children}</>;\n}\n"],"names":[],"mappings":";;;;;AAAA;;AAIe,SAAS,YAAY,EAAE,QAAQ,EAA2B;IACvE,qBAAO;kBAAG;;AACZ","debugId":null}}]
+}

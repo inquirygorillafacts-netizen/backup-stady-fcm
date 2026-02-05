@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import { 
   Send, 
   Image as ImageIcon,
@@ -10,9 +11,11 @@ import {
   Plus,
   MessageSquare,
   Mic,
+  MicOff,
   Sparkles,
   Search,
   ChevronDown,
+  ChevronUp,
   History,
   Bot,
   User as UserIcon,
@@ -29,9 +32,18 @@ import {
   Save,
   X,
   Workflow,
-  Check
+  Check,
+  Heart,
+  MoreVertical,
+  Volume2,
+  Pause,
+  Play,
+  Square,
+  CircleDot
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { getFirebaseDatabase } from '@/lib/firebase';
+import { ref, set, get, update } from 'firebase/database';
 
 interface Message {
   id: string;

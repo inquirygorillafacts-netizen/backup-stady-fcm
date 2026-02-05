@@ -1,3 +1,11 @@
 {
-  "/page": "app/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/onboarding/page": "app/onboarding/page.js",
+  "/owner/page": "app/owner/page.js",
+  "/page": "app/page.js",
+  "/student/ai/page": "app/student/ai/page.js",
+  "/student/forms/page": "app/student/forms/page.js",
+  "/student/groups/page": "app/student/groups/page.js",
+  "/student/page": "app/student/page.js",
+  "/student/profile/page": "app/student/profile/page.js"
 }
