@@ -5,15 +5,11 @@ import { useAuth } from '@/contexts/AuthContext';
 import { 
   Send, 
   Image as ImageIcon,
-  FileText,
   Camera,
-  Settings,
   Plus,
-  MessageSquare,
   Mic,
   MicOff,
   Sparkles,
-  Search,
   ChevronDown,
   ChevronUp,
   History,
@@ -21,25 +17,18 @@ import {
   User as UserIcon,
   Trash2,
   Copy,
-  Share2,
   RotateCw,
   Zap,
   Brain,
-  ScanLine,
-  Upload,
-  Download,
   Edit,
-  Save,
   X,
-  Workflow,
   Check,
   Heart,
   MoreVertical,
   Volume2,
-  Pause,
-  Play,
-  Square,
-  CircleDot
+  CircleDot,
+  Folder,
+  Clock
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { getFirebaseDatabase } from '@/lib/firebase';
@@ -50,8 +39,7 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
-  type?: 'text' | 'image' | 'pdf';
-  imageUrl?: string;
+  liked?: boolean;
 }
 
 interface Chat {
@@ -70,7 +58,22 @@ interface CustomAIModel {
   created_at: string;
 }
 
+interface UserBiography {
+  name: string;
+  work: string;
+  likes: string[];
+  dislikes: string[];
+  goals: string[];
+  dreams: string[];
+  relationships: { [key: string]: string };
+  habits: string[];
+  lastUpdated: string;
+}
+
+type AIMode = 'chat' | 'image-gen' | 'deep-research' | 'pdf-gen';
+
 export default function AIPage() {
+  const { userData } = useAuth();
   const [chats, setChats] = useState<Chat[]>([]);
   const [currentChat, setCurrentChat] = useState<Chat | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -79,17 +82,24 @@ export default function AIPage() {
   const [showHistory, setShowHistory] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showCustomModels, setShowCustomModels] = useState(false);
-  const [selectedFeature, setSelectedFeature] = useState<'chat' | 'image-gen' | 'deep-research' | 'voice'>('chat');
+  const [showModeDropdown, setShowModeDropdown] = useState(false);
+  const [showFileOptions, setShowFileOptions] = useState(false);
+  const [selectedMode, setSelectedMode] = useState<AIMode>('chat');
+  const [isVoiceMode, setIsVoiceMode] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [customModels, setCustomModels] = useState<CustomAIModel[]>([]);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
+  const [userBiography, setUserBiography] = useState<UserBiography | null>(null);
+  const [editingChatId, setEditingChatId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchChats();
     loadCustomModels();
-  }, []);
+    loadUserBiography();
+  }, [userData]);
 
   useEffect(() => {
     scrollToBottom();
@@ -97,6 +107,64 @@ export default function AIPage() {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const loadUserBiography = async () => {
+    if (!userData?.id) return;
+    
+    try {
+      const db = getFirebaseDatabase();
+      const bioRef = ref(db, `users/${userData.id}/biography`);
+      const snapshot = await get(bioRef);
+      
+      if (snapshot.exists()) {
+        setUserBiography(snapshot.val());
+      } else {
+        // Create initial biography
+        const initialBio: UserBiography = {
+          name: userData.name || '',
+          work: '',
+          likes: [],
+          dislikes: [],
+          goals: [],
+          dreams: [],
+          relationships: {},
+          habits: [],
+          lastUpdated: new Date().toISOString()
+        };
+        await set(bioRef, initialBio);
+        setUserBiography(initialBio);
+      }
+    } catch (error) {
+      console.error('Error loading biography:', error);
+      // Fallback to localStorage
+      const stored = localStorage.getItem('userBiography');
+      if (stored) {
+        setUserBiography(JSON.parse(stored));
+      }
+    }
+  };
+
+  const updateUserBiography = async (updates: Partial<UserBiography>) => {
+    if (!userData?.id) return;
+
+    const updatedBio = {
+      ...userBiography,
+      ...updates,
+      lastUpdated: new Date().toISOString()
+    } as UserBiography;
+
+    try {
+      const db = getFirebaseDatabase();
+      const bioRef = ref(db, `users/${userData.id}/biography`);
+      await update(bioRef, updatedBio);
+      setUserBiography(updatedBio);
+    } catch (error) {
+      console.error('Error updating biography:', error);
+      // Fallback to localStorage
+      localStorage.setItem('userBiography', JSON.stringify(updatedBio));
+      setUserBiography(updatedBio);
+    }
   };
 
   const fetchChats = () => {
@@ -125,7 +193,27 @@ export default function AIPage() {
     setCurrentChat(newChat);
     setMessages([]);
     localStorage.setItem('aiChats', JSON.stringify(updatedChats));
-    toast.success('New chat created');
+  };
+
+  const handleRenameChat = (chatId: string, newTitle: string) => {
+    const updatedChats = chats.map(c => 
+      c.id === chatId ? { ...c, title: newTitle } : c
+    );
+    setChats(updatedChats);
+    localStorage.setItem('aiChats', JSON.stringify(updatedChats));
+    setEditingChatId(null);
+    toast.success('Chat renamed');
+  };
+
+  const handleDeleteChat = (chatId: string) => {
+    const updatedChats = chats.filter(c => c.id !== chatId);
+    setChats(updatedChats);
+    localStorage.setItem('aiChats', JSON.stringify(updatedChats));
+    if (currentChat?.id === chatId) {
+      setCurrentChat(null);
+      setMessages([]);
+    }
+    toast.success('Chat deleted');
   };
 
   const handleSend = async () => {
@@ -133,6 +221,7 @@ export default function AIPage() {
 
     if (!currentChat) {
       createNewChat();
+      setTimeout(() => handleSend(), 100);
       return;
     }
 
@@ -148,383 +237,636 @@ export default function AIPage() {
     setInput('');
     setLoading(true);
 
+    // Extract biography information from conversation
+    extractBiographyInfo(input);
+
     // Simulate AI response
     setTimeout(() => {
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: getDemoResponse(selectedFeature),
+        content: getDemoResponse(selectedMode),
         timestamp: new Date()
       };
       const finalMessages = [...updatedMessages, aiMessage];
       setMessages(finalMessages);
       
-      // Update chat in storage
-      const updatedChat = { ...currentChat, messages: finalMessages };
-      setCurrentChat(updatedChat);
-      const updatedChats = chats.map(c => c.id === currentChat.id ? updatedChat : c);
-      setChats(updatedChats);
-      localStorage.setItem('aiChats', JSON.stringify(updatedChats));
+      // Auto-generate title for first message
+      if (finalMessages.length === 2) {
+        const title = input.slice(0, 50) + (input.length > 50 ? '...' : '');
+        const updatedChat = { ...currentChat, title, messages: finalMessages };
+        setCurrentChat(updatedChat);
+        const updatedChats = chats.map(c => c.id === currentChat.id ? updatedChat : c);
+        setChats(updatedChats);
+        localStorage.setItem('aiChats', JSON.stringify(updatedChats));
+      } else {
+        // Update chat
+        const updatedChat = { ...currentChat, messages: finalMessages };
+        setCurrentChat(updatedChat);
+        const updatedChats = chats.map(c => c.id === currentChat.id ? updatedChat : c);
+        setChats(updatedChats);
+        localStorage.setItem('aiChats', JSON.stringify(updatedChats));
+      }
       
       setLoading(false);
     }, 1500);
   };
 
-  const getDemoResponse = (feature: string) => {
-    switch (feature) {
+  const extractBiographyInfo = (message: string) => {
+    // Simple NLP-like extraction (in production, use proper AI)
+    const lowerMsg = message.toLowerCase();
+    
+    // Extract name
+    if (lowerMsg.includes('my name is') || lowerMsg.includes('मेरा नाम')) {
+      const nameMatch = message.match(/(?:my name is|मेरा नाम) (\w+)/i);
+      if (nameMatch) {
+        updateUserBiography({ name: nameMatch[1] });
+      }
+    }
+
+    // Extract work/occupation
+    if (lowerMsg.includes('i work') || lowerMsg.includes('मैं काम')) {
+      const workMatch = message.match(/(?:i work as|मैं काम करता हूं) (.+)/i);
+      if (workMatch) {
+        updateUserBiography({ work: workMatch[1] });
+      }
+    }
+
+    // Extract likes
+    if (lowerMsg.includes('i like') || lowerMsg.includes('मुझे पसंद')) {
+      const likes = userBiography?.likes || [];
+      const newLike = message.match(/(?:i like|मुझे पसंद) (.+)/i)?.[1];
+      if (newLike && !likes.includes(newLike)) {
+        updateUserBiography({ likes: [...likes, newLike] });
+      }
+    }
+
+    // Extract goals
+    if (lowerMsg.includes('my goal') || lowerMsg.includes('मेरा लक्ष्य')) {
+      const goals = userBiography?.goals || [];
+      const newGoal = message.match(/(?:my goal|मेरा लक्ष्य) (.+)/i)?.[1];
+      if (newGoal && !goals.includes(newGoal)) {
+        updateUserBiography({ goals: [...goals, newGoal] });
+      }
+    }
+  };
+
+  const getDemoResponse = (mode: AIMode) => {
+    const userName = userBiography?.name || userData?.name || 'there';
+    
+    switch (mode) {
       case 'image-gen':
-        return '🎨 Image generation के लिए मैं आपके prompt के based पर beautiful images create कर सकता हूं। यह feature बाद में Google Gemini Nano Banana या DALL-E से integrate होगा।';
+        return `Hi ${userName}! 🎨 I'll generate an image based on your description. This feature will be fully functional after Google Gemini Nano Banana integration.`;
       case 'deep-research':
-        return '🔍 Deep Research Mode: मैं आपके topic पर comprehensive research करूंगा, multiple sources से information gather करूंगा, और detailed analysis के साथ report provide करूंगा। यह feature बाद में fully functional होगा।';
-      case 'voice':
-        return '🎤 Voice-to-Voice mode में आप मुझसे बोलकर बात कर सकते हैं और मैं भी audio में respond करूंगा। यह Google Gemini Live API से integrate होगा।';
+        return `${userName}, मैं आपके topic पर deep research कर रहा हूं... 🔍 Multiple sources से data collect कर रहा हूं। This will provide comprehensive analysis once integrated.`;
+      case 'pdf-gen':
+        return `${userName}, मैं आपके लिए PDF document generate कर रहा हूं... 📄 This will be available after full integration.`;
       default:
-        return `मैं आपकी मदद के लिए यहां हूं! ${selectedModel ? `Current Model: ${customModels.find(m => m.id === selectedModel)?.name}` : ''}\n\nयह एक demo response है। Firebase और Google AI integration के बाद यह fully functional होगा।\n\n✨ Available Features:\n- Study materials और notes\n- Government job forms की information\n- Exam preparation tips\n- PDF generation\n- Image analysis\n- Deep research`;
+        let response = `Hello ${userName}! 👋`;
+        
+        if (userBiography?.goals && userBiography.goals.length > 0) {
+          response += `\n\nI remember your goals: ${userBiography.goals.join(', ')}. Let me help you with that!`;
+        }
+        
+        response += `\n\nThis is a demo response. After Firebase and Google AI integration, I'll remember our entire conversation history and provide personalized responses based on what I know about you.`;
+        
+        return response;
     }
   };
 
-  const handleFileUpload = (type: 'image' | 'pdf' | 'camera') => {
-    toast.info(`${type} upload feature will be available after Firebase Storage integration`);
-  };
+  const handleLikeMessage = (messageId: string) => {
+    const updatedMessages = messages.map(msg =>
+      msg.id === messageId ? { ...msg, liked: !msg.liked } : msg
+    );
+    setMessages(updatedMessages);
 
-  const handleVoiceToggle = () => {
-    setIsRecording(!isRecording);
-    if (!isRecording) {
-      toast.info('Voice recording started... (Feature pending)');
-    } else {
-      toast.info('Voice recording stopped');
+    // Save liked messages
+    const likedMessages = updatedMessages.filter(m => m.liked && m.role === 'assistant');
+    localStorage.setItem('likedAIMessages', JSON.stringify(likedMessages));
+
+    // Update chat
+    if (currentChat) {
+      const updatedChat = { ...currentChat, messages: updatedMessages };
+      const updatedChats = chats.map(c => c.id === currentChat.id ? updatedChat : c);
+      setChats(updatedChats);
+      localStorage.setItem('aiChats', JSON.stringify(updatedChats));
     }
-  };
 
-  const handleGeneratePDF = () => {
-    toast.info('PDF generation feature will create downloadable documents from chat history');
+    toast.success(updatedMessages.find(m => m.id === messageId)?.liked ? 'Added to liked' : 'Removed from liked');
   };
 
   const handleCopy = (content: string) => {
     navigator.clipboard.writeText(content);
-    toast.success('Copied to clipboard!');
+    toast.success('Copied!');
   };
 
-  const handleShare = (message: Message) => {
-    const shareUrl = `${window.location.origin}/shared/${message.id}`;
-    navigator.clipboard.writeText(shareUrl);
-    toast.success('Share link copied! Others can view partial content and must login to read full.');
+  const handleRegenerate = async () => {
+    if (messages.length === 0) return;
+    
+    // Remove last AI message and regenerate
+    const lastUserMessage = messages.filter(m => m.role === 'user').pop();
+    if (!lastUserMessage) return;
+
+    const messagesWithoutLastAI = messages.slice(0, -1);
+    setMessages(messagesWithoutLastAI);
+    setLoading(true);
+
+    setTimeout(() => {
+      const aiMessage: Message = {
+        id: Date.now().toString(),
+        role: 'assistant',
+        content: getDemoResponse(selectedMode) + '\n\n(Regenerated)',
+        timestamp: new Date()
+      };
+      const finalMessages = [...messagesWithoutLastAI, aiMessage];
+      setMessages(finalMessages);
+      setLoading(false);
+    }, 1500);
   };
 
-  const handleDeleteChat = (chatId: string) => {
-    const updatedChats = chats.filter(c => c.id !== chatId);
-    setChats(updatedChats);
-    localStorage.setItem('aiChats', JSON.stringify(updatedChats));
-    if (currentChat?.id === chatId) {
-      setCurrentChat(null);
-      setMessages([]);
+  const handleVoiceMode = () => {
+    setIsVoiceMode(!isVoiceMode);
+    if (!isVoiceMode) {
+      toast.info('Voice mode activated 🎤');
+    } else {
+      toast.info('Back to text mode');
     }
-    toast.success('Chat deleted');
   };
 
-  const FEATURES = [
+  const handleToggleRecording = () => {
+    setIsRecording(!isRecording);
+    if (!isRecording) {
+      toast.info('Recording started... (Feature pending integration)');
+    } else {
+      toast.info('Recording stopped');
+    }
+  };
+
+  const handleFileUpload = (type: 'camera' | 'gallery') => {
+    toast.info(`${type === 'camera' ? 'Camera' : 'Gallery'} feature will be available after Firebase Storage integration`);
+    setShowFileOptions(false);
+  };
+
+  const AI_MODES = [
     { id: 'chat', label: 'Chat', icon: MessageSquare },
     { id: 'image-gen', label: 'Image Gen', icon: ImageIcon },
     { id: 'deep-research', label: 'Deep Research', icon: Zap },
-    { id: 'voice', label: 'Voice Chat', icon: Mic },
+    { id: 'pdf-gen', label: 'PDF Gen', icon: FileText },
   ];
 
   return (
-    <div className="h-screen flex relative">
-      {/* Chat History Sidebar */}
-      {showHistory && (
-        <div className="fixed inset-0 z-50 lg:relative lg:block">
-          <div className="lg:hidden absolute inset-0 bg-black/50" onClick={() => setShowHistory(false)} />
-          <div className="absolute lg:relative inset-y-0 left-0 w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
-            <div className="p-4 space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white">History</h2>
-                <button onClick={() => setShowHistory(false)} className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              
-              <button
-                onClick={createNewChat}
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-3 rounded-xl font-medium hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg"
-              >
-                <Plus className="w-5 h-5" />
-                New Chat
-              </button>
-
-              <div className="space-y-2">
-                {chats.map((chat) => (
-                  <div key={chat.id} className="relative group">
-                    <button
-                      onClick={() => {
-                        setCurrentChat(chat);
-                        setMessages(chat.messages || []);
-                        setShowHistory(false);
-                      }}
-                      className={`w-full text-left p-3 rounded-lg transition-colors ${
-                        currentChat?.id === chat.id
-                          ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
-                          : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
-                      }`}
-                    >
-                      <p className="font-medium truncate">{chat.title}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {new Date(chat.created_at).toLocaleDateString('hi-IN')}
-                      </p>
-                    </button>
-                    <button
-                      onClick={() => handleDeleteChat(chat.id)}
-                      className="absolute top-2 right-2 p-1 rounded opacity-0 group-hover:opacity-100 bg-red-500 text-white hover:bg-red-600 transition-all"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
+    <div className="h-screen flex flex-col bg-white dark:bg-gray-900">
+      {/* Modern Header */}
+      <div className="border-b border-gray-200 dark:border-gray-700 px-4 py-3">
+        <div className="flex items-center justify-between max-w-5xl mx-auto">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowHistory(true)}
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              <History className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            </button>
+            <div>
+              <h1 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                <Brain className="w-5 h-5 text-purple-600" />
+                {selectedModel 
+                  ? customModels.find(m => m.id === selectedModel)?.name 
+                  : 'AI Assistant'}
+              </h1>
             </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowCustomModels(true)}
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              title="Custom Models"
+            >
+              <Workflow className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            </button>
+            <button
+              onClick={() => setShowSettings(true)}
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              <Settings className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            </button>
           </div>
         </div>
-      )}
+      </div>
 
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setShowHistory(!showHistory)}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <History className="w-5 h-5" />
-              </button>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                  <Brain className="w-5 h-5 text-purple-600" />
-                  AI Assistant
-                </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {selectedModel 
-                    ? customModels.find(m => m.id === selectedModel)?.name 
-                    : 'Powered by Google AI'}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setShowCustomModels(!showCustomModels)}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                title="Custom AI Models"
-              >
-                <Workflow className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => setShowSettings(!showSettings)}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <Settings className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-
-          {/* Feature Selector */}
-          <div className="flex gap-2 overflow-x-auto pb-2">
-            {FEATURES.map((feature) => {
-              const Icon = feature.icon;
-              return (
-                <button
-                  key={feature.id}
-                  onClick={() => setSelectedFeature(feature.id as any)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium whitespace-nowrap transition-all ${
-                    selectedFeature === feature.id
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  {feature.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
+      {/* Messages Area */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-3xl mx-auto px-4 py-6 space-y-6">
           {messages.length === 0 ? (
-            <div className="h-full flex items-center justify-center">
-              <div className="text-center space-y-6 max-w-2xl">
-                <div className="w-24 h-24 mx-auto bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-2xl animate-pulse">
-                  <Bot className="w-12 h-12 text-white" />
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center space-y-6 py-12">
+                <div className="w-20 h-20 mx-auto bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-2xl">
+                  <Bot className="w-10 h-10 text-white" />
                 </div>
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  AI Study Assistant
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400">
-                  मैं आपकी study में मदद कर सकता हूं। Ask me anything!
-                </p>
-                <div className="grid grid-cols-2 gap-4 pt-4">
+                <div>
+                  <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                    Hi {userData?.name || 'there'}! 👋
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    How can I help you today?
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
                   {[
-                    { icon: FileText, text: 'Generate Study PDFs' },
-                    { icon: ImageIcon, text: 'Create Images' },
-                    { icon: Zap, text: 'Deep Research' },
-                    { icon: Camera, text: 'Scan & Analyze' }
+                    { icon: Sparkles, text: 'Generate ideas', color: 'from-yellow-400 to-orange-500' },
+                    { icon: Brain, text: 'Deep research', color: 'from-blue-500 to-cyan-500' },
+                    { icon: ImageIcon, text: 'Create images', color: 'from-pink-500 to-purple-500' },
+                    { icon: Zap, text: 'Quick answers', color: 'from-green-500 to-emerald-500' }
                   ].map((item, idx) => (
-                    <div key={idx} className="p-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-                      <item.icon className="w-6 h-6 text-blue-600 dark:text-blue-400 mb-2" />
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">{item.text}</p>
-                    </div>
+                    <button
+                      key={idx}
+                      onClick={() => setInput(item.text)}
+                      className={`p-4 bg-gradient-to-br ${item.color} text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all`}
+                    >
+                      <item.icon className="w-6 h-6 mb-2" />
+                      <p className="text-sm font-medium">{item.text}</p>
+                    </button>
                   ))}
                 </div>
               </div>
             </div>
           ) : (
-            messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex gap-3 ${
-                  message.role === 'user' ? 'justify-end' : 'justify-start'
-                } animate-fade-in`}
-              >
-                {message.role === 'assistant' && (
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <Bot className="w-6 h-6 text-white" />
-                  </div>
-                )}
+            <>
+              {messages.map((message, index) => (
                 <div
-                  className={`max-w-2xl p-4 rounded-2xl shadow-lg ${
-                    message.role === 'user'
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
-                      : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700'
-                  }`}
+                  key={message.id}
+                  className={`flex gap-3 ${
+                    message.role === 'user' ? 'justify-end' : 'justify-start'
+                  } group`}
                 >
-                  <p className="whitespace-pre-wrap">{message.content}</p>
-                  <div className="mt-3 flex items-center gap-2">
-                    <button 
-                      onClick={() => handleCopy(message.content)}
-                      className="p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+                  {message.role === 'assistant' && (
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-lg">
+                      <Bot className="w-5 h-5 text-white" />
+                    </div>
+                  )}
+                  <div className="flex flex-col max-w-[85%]">
+                    <div
+                      className={`px-4 py-3 rounded-2xl ${
+                        message.role === 'user'
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
+                      }`}
                     >
-                      <Copy className="w-4 h-4" />
-                    </button>
-                    <button 
-                      onClick={() => handleShare(message)}
-                      className="p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
-                    >
-                      <Share2 className="w-4 h-4" />
-                    </button>
-                    {message.role === 'assistant' && (
-                      <button className="p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
-                        <RotateCw className="w-4 h-4" />
+                      <p className="whitespace-pre-wrap break-words">{message.content}</p>
+                    </div>
+                    
+                    {/* Message Actions */}
+                    <div className={`flex items-center gap-1 mt-2 opacity-0 group-hover:opacity-100 transition-opacity ${
+                      message.role === 'user' ? 'justify-end' : 'justify-start'
+                    }`}>
+                      <button
+                        onClick={() => handleCopy(message.content)}
+                        className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                        title="Copy"
+                      >
+                        <Copy className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                       </button>
-                    )}
-                    <span className="ml-auto text-xs opacity-60">
-                      {new Date(message.timestamp).toLocaleTimeString('hi-IN', { hour: '2-digit', minute: '2-digit' })}
-                    </span>
+                      {message.role === 'assistant' && (
+                        <>
+                          <button
+                            onClick={() => handleLikeMessage(message.id)}
+                            className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                            title="Like"
+                          >
+                            <Heart className={`w-4 h-4 ${
+                              message.liked 
+                                ? 'fill-red-500 text-red-500' 
+                                : 'text-gray-600 dark:text-gray-400'
+                            }`} />
+                          </button>
+                          {index === messages.length - 1 && (
+                            <button
+                              onClick={handleRegenerate}
+                              className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                              title="Regenerate"
+                            >
+                              <RotateCw className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                            </button>
+                          )}
+                        </>
+                      )}
+                      <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
+                        {new Date(message.timestamp).toLocaleTimeString('hi-IN', { 
+                          hour: '2-digit', 
+                          minute: '2-digit' 
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                  {message.role === 'user' && (
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center flex-shrink-0 shadow-lg">
+                      <UserIcon className="w-5 h-5 text-white" />
+                    </div>
+                  )}
+                </div>
+              ))}
+              {loading && (
+                <div className="flex gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
+                    <Bot className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="bg-gray-100 dark:bg-gray-800 px-4 py-3 rounded-2xl">
+                    <div className="flex gap-2">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
+                    </div>
                   </div>
                 </div>
-                {message.role === 'user' && (
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <UserIcon className="w-6 h-6 text-white" />
-                  </div>
-                )}
-              </div>
-            ))
+              )}
+              <div ref={messagesEndRef} />
+            </>
           )}
-          {loading && (
-            <div className="flex gap-3 animate-fade-in">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
-                <Bot className="w-6 h-6 text-white" />
-              </div>
-              <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
-                <div className="flex gap-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" />
-                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-                  <div className="w-2 h-2 bg-pink-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
-                </div>
-              </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
         </div>
+      </div>
 
-        {/* Input Area */}
-        <div className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4">
-          <div className="max-w-4xl mx-auto">
-            {/* Quick Actions */}
-            <div className="flex items-center gap-2 mb-3 overflow-x-auto pb-2">
-              <button 
-                onClick={() => handleFileUpload('image')}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                title="Upload Image"
+      {/* Modern Input Area */}
+      <div className="border-t border-gray-200 dark:border-gray-700 px-4 py-4 bg-white dark:bg-gray-900">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-end gap-2">
+            {/* Main Input Container */}
+            <div className="flex-1 relative">
+              {/* Mode Dropdown Button */}
+              <button
+                onClick={() => setShowModeDropdown(!showModeDropdown)}
+                className="absolute left-3 top-1/2 -translate-y-1/2 z-10 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               >
-                <ImageIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                {React.createElement(AI_MODES.find(m => m.id === selectedMode)?.icon || Sparkles, {
+                  className: "w-5 h-5 text-gray-600 dark:text-gray-400"
+                })}
               </button>
-              <button 
-                onClick={() => handleFileUpload('pdf')}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                title="Upload PDF"
-              >
-                <FileText className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              </button>
-              <button 
-                onClick={() => handleFileUpload('camera')}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                title="Camera/Scanner"
-              >
-                <Camera className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              </button>
-              <button 
-                onClick={handleVoiceToggle}
-                className={`p-2 rounded-lg transition-colors ${
-                  isRecording 
-                    ? 'bg-red-500 text-white animate-pulse' 
-                    : 'hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`}
-                title="Voice Input"
-              >
-                <Mic className="w-5 h-5" />
-              </button>
-              <button 
-                onClick={handleGeneratePDF}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                title="Generate PDF"
-              >
-                <Download className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              </button>
-              <div className="ml-auto text-xs text-gray-500 dark:text-gray-400">
-                {selectedFeature === 'voice' && 'Voice Mode Active 🎤'}
-              </div>
-            </div>
 
-            {/* Input Field */}
-            <div className="flex items-center gap-2">
+              {/* Mode Dropdown */}
+              {showModeDropdown && (
+                <div className="absolute bottom-full left-0 mb-2 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 p-2 min-w-[200px] z-20">
+                  {AI_MODES.map((mode) => {
+                    const Icon = mode.icon;
+                    return (
+                      <button
+                        key={mode.id}
+                        onClick={() => {
+                          setSelectedMode(mode.id as AIMode);
+                          setShowModeDropdown(false);
+                          toast.success(`${mode.label} mode selected`);
+                        }}
+                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                          selectedMode === mode.id
+                            ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
+                            : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
+                        }`}
+                      >
+                        <Icon className="w-5 h-5" />
+                        <span className="font-medium">{mode.label}</span>
+                        {selectedMode === mode.id && <Check className="w-4 h-4 ml-auto" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* File Upload Button */}
+              <button
+                onClick={() => setShowFileOptions(!showFileOptions)}
+                className="absolute left-12 top-1/2 -translate-y-1/2 z-10 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              >
+                <Plus className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+              </button>
+
+              {/* File Options Dropdown */}
+              {showFileOptions && (
+                <div className="absolute bottom-full left-12 mb-2 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 p-2 min-w-[180px] z-20">
+                  <button
+                    onClick={() => handleFileUpload('camera')}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+                  >
+                    <Camera className="w-5 h-5" />
+                    <span className="font-medium">Take Photo</span>
+                  </button>
+                  <button
+                    onClick={() => handleFileUpload('gallery')}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+                  >
+                    <ImageIcon className="w-5 h-5" />
+                    <span className="font-medium">Choose from Gallery</span>
+                  </button>
+                </div>
+              )}
+
+              {/* Input Field */}
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
                 placeholder={
-                  selectedFeature === 'image-gen' 
-                    ? 'Describe the image you want to generate...'
-                    : selectedFeature === 'deep-research'
-                    ? 'What topic should I research?'
-                    : 'Type your message...'
+                  selectedMode === 'image-gen' 
+                    ? 'Describe the image...'
+                    : selectedMode === 'deep-research'
+                    ? 'What to research?'
+                    : 'Message AI...'
                 }
-                className="flex-1 px-4 py-3 bg-gray-100 dark:bg-gray-700 border-none rounded-xl focus:ring-2 focus:ring-blue-500 transition-all"
+                className="w-full pl-24 pr-4 py-3 bg-gray-100 dark:bg-gray-800 rounded-full border-none focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 dark:text-white"
               />
-              <button
-                onClick={handleSend}
-                disabled={!input.trim() || loading}
-                className="p-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
-              >
-                <Send className="w-5 h-5" />
-              </button>
             </div>
+
+            {/* Voice Mode Button */}
+            <button
+              onClick={handleVoiceMode}
+              className={`p-3 rounded-full transition-all shadow-lg ${
+                isVoiceMode
+                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+              }`}
+              title="Voice Mode"
+            >
+              <Mic className="w-5 h-5" />
+            </button>
+
+            {/* Send Button */}
+            <button
+              onClick={handleSend}
+              disabled={!input.trim() || loading}
+              className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"
+            >
+              <Send className="w-5 h-5" />
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Custom Models Panel */}
+      {/* Voice Mode Slide */}
+      {isVoiceMode && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end">
+          <div className="w-full bg-gradient-to-br from-purple-600 via-pink-600 to-blue-600 rounded-t-3xl p-8 animate-slide-up">
+            <button
+              onClick={handleVoiceMode}
+              className="absolute top-4 right-4 p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+            >
+              <X className="w-6 h-6 text-white" />
+            </button>
+
+            <div className="text-center space-y-6">
+              <div className="relative w-32 h-32 mx-auto">
+                {/* Animated Voice Circles */}
+                <div className={`absolute inset-0 rounded-full bg-white/20 ${isRecording ? 'animate-ping' : ''}`} />
+                <div className={`absolute inset-4 rounded-full bg-white/30 ${isRecording ? 'animate-pulse' : ''}`} />
+                <div className="absolute inset-8 rounded-full bg-white flex items-center justify-center">
+                  {isRecording ? (
+                    <Volume2 className="w-12 h-12 text-purple-600 animate-pulse" />
+                  ) : (
+                    <Mic className="w-12 h-12 text-purple-600" />
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-2xl font-bold text-white mb-2">
+                  {isRecording ? 'Listening...' : 'Voice Mode'}
+                </h3>
+                <p className="text-white/80">
+                  {isRecording ? 'Speak now. I\'m listening.' : 'Tap to start voice conversation'}
+                </p>
+              </div>
+
+              <button
+                onClick={handleToggleRecording}
+                className={`px-8 py-4 rounded-full font-semibold transition-all shadow-xl ${
+                  isRecording
+                    ? 'bg-red-500 hover:bg-red-600 text-white'
+                    : 'bg-white text-purple-600 hover:bg-gray-100'
+                }`}
+              >
+                {isRecording ? (
+                  <span className="flex items-center gap-2">
+                    <MicOff className="w-5 h-5" />
+                    Stop Recording
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <Mic className="w-5 h-5" />
+                    Start Recording
+                  </span>
+                )}
+              </button>
+
+              <p className="text-xs text-white/60">
+                Voice-to-voice feature will be available after Google Gemini Live API integration
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* History Bottom Sheet */}
+      {showHistory && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" onClick={() => setShowHistory(false)}>
+          <div
+            className="fixed inset-x-0 bottom-0 bg-white dark:bg-gray-900 rounded-t-3xl max-h-[80vh] overflow-y-auto animate-slide-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Handle Bar */}
+            <div className="flex justify-center pt-3 pb-2">
+              <div className="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full" />
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                  <History className="w-6 h-6" />
+                  Chat History
+                </h2>
+                <button
+                  onClick={() => {
+                    createNewChat();
+                    setShowHistory(false);
+                  }}
+                  className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors shadow-lg"
+                >
+                  <Plus className="w-4 h-4" />
+                  New Chat
+                </button>
+              </div>
+
+              {chats.length === 0 ? (
+                <div className="text-center py-12">
+                  <MessageSquare className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+                  <p className="text-gray-600 dark:text-gray-400">No chats yet</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {chats.map((chat) => (
+                    <div
+                      key={chat.id}
+                      className="group relative bg-gray-50 dark:bg-gray-800 rounded-xl p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <button
+                          onClick={() => {
+                            setCurrentChat(chat);
+                            setMessages(chat.messages || []);
+                            setShowHistory(false);
+                          }}
+                          className="flex-1 text-left"
+                        >
+                          {editingChatId === chat.id ? (
+                            <input
+                              type="text"
+                              value={editingTitle}
+                              onChange={(e) => setEditingTitle(e.target.value)}
+                              onBlur={() => handleRenameChat(chat.id, editingTitle)}
+                              onKeyPress={(e) => e.key === 'Enter' && handleRenameChat(chat.id, editingTitle)}
+                              className="w-full px-2 py-1 bg-white dark:bg-gray-900 rounded border border-blue-500 focus:outline-none"
+                              autoFocus
+                            />
+                          ) : (
+                            <>
+                              <p className="font-semibold text-gray-900 dark:text-white line-clamp-1">
+                                {chat.title}
+                              </p>
+                              <div className="flex items-center gap-2 mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                <Clock className="w-3 h-3" />
+                                {new Date(chat.created_at).toLocaleDateString('hi-IN')}
+                                <span>•</span>
+                                <span>{chat.messages?.length || 0} messages</span>
+                              </div>
+                            </>
+                          )}
+                        </button>
+
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() => {
+                              setEditingChatId(chat.id);
+                              setEditingTitle(chat.title);
+                            }}
+                            className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                            title="Rename"
+                          >
+                            <Edit className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteChat(chat.id)}
+                            className="p-2 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Models Modal */}
       {showCustomModels && (
         <CustomModelsPanel
           models={customModels}
@@ -538,14 +880,8 @@ export default function AIPage() {
   );
 }
 
-// Custom Models Panel Component
-function CustomModelsPanel({ 
-  models, 
-  setModels, 
-  selectedModel, 
-  setSelectedModel,
-  onClose 
-}: any) {
+// Custom Models Panel Component (same as before but with updated styling)
+function CustomModelsPanel({ models, setModels, selectedModel, setSelectedModel, onClose }: any) {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -594,11 +930,11 @@ function CustomModelsPanel({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-2xl">
-        <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 z-10">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-2xl">
+        <div className="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 p-6 z-10">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Custom AI Models</h2>
-            <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+            <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -684,7 +1020,7 @@ function CustomModelsPanel({
 
           {/* Create Form */}
           {showCreateForm && (
-            <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl space-y-4">
+            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl space-y-4">
               <h3 className="font-bold text-gray-900 dark:text-white">Create New Model</h3>
               
               <div>
@@ -696,7 +1032,7 @@ function CustomModelsPanel({
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="e.g., Study Helper, Exam Coach"
-                  className="w-full px-4 py-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-white dark:bg-gray-900 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -709,7 +1045,7 @@ function CustomModelsPanel({
                   value={formData.purpose}
                   onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
                   placeholder="What is this model for?"
-                  className="w-full px-4 py-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-white dark:bg-gray-900 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -722,7 +1058,7 @@ function CustomModelsPanel({
                   onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
                   placeholder="How should this AI behave?"
                   rows={3}
-                  className="w-full px-4 py-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-white dark:bg-gray-900 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -735,14 +1071,14 @@ function CustomModelsPanel({
                   value={formData.sources}
                   onChange={(e) => setFormData({ ...formData, sources: e.target.value })}
                   placeholder="Book names, PDFs, websites..."
-                  className="w-full px-4 py-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-white dark:bg-gray-900 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div className="flex gap-2">
                 <button
                   onClick={() => setShowCreateForm(false)}
-                  className="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-gray-500"
+                  className="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-gray-600"
                 >
                   Cancel
                 </button>

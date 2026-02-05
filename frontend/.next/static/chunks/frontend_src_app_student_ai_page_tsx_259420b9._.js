@@ -1,8 +1,10 @@
 (globalThis.TURBOPACK_CHUNK_LISTS || (globalThis.TURBOPACK_CHUNK_LISTS = [])).push({
     script: typeof document === "object" ? document.currentScript : undefined,
     chunks: [
-  "static/chunks/frontend_src_app_student_ai_page_tsx_c35769c5._.js",
-  "static/chunks/9e883_lucide-react_dist_esm_icons_68011094._.js"
+  "static/chunks/frontend_src_044743dd._.js",
+  "static/chunks/9e883_@firebase_auth_dist_esm_78841cca._.js",
+  "static/chunks/9e883_@firebase_database_dist_index_esm_e11c46bb.js",
+  "static/chunks/9e883_87c94ed0._.js"
 ],
     source: "dynamic"
 });
