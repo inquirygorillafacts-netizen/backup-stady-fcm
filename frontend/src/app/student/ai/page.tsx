@@ -531,7 +531,7 @@ export default function AIPage() {
       </div>
 
       {/* Messages Area with Smooth Scrolling */}
-      <div className="flex-1 overflow-y-auto" data-testid="messages-container">
+      <div className="flex-1 overflow-y-auto relative z-0" data-testid="messages-container">
         <div className="max-w-3xl mx-auto px-4 py-6 space-y-6">
           {messages.length === 0 ? (
             <div className="flex items-center justify-center h-full">
