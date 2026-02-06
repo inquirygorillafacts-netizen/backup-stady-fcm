@@ -1,0 +1,89 @@
+[00:00:00.800] Server  LOG     ✓ Ready in 572ms
+[00:11:16.061] Server  LOG     ○ Compiling / ...
+[00:15:55.801] Server  WARN    ⚠ Cross origin request detected from studymode-enhance.preview.emergentagent.com to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+[00:15:56.167] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="/frontend/...">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="hi" suppressHydrationWarning={true}>
+                          <head>
+                          <body
+                            className="inter_5972bc34-module__OU16Qa__className"
+-                           __processed_b769a402-ed85-4d61-96bf-6011c539defa__="true"
+                          >
+                  ...
+
+[00:16:17.441] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:16:17.441] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="/frontend/...">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="hi" suppressHydrationWarning={true}>
+                          <head>
+                          <body
+                            className="inter_5972bc34-module__OU16Qa__className"
+-                           __processed_f1239a4b-ab09-4b96-8c25-29bf50449590__="true"
+                          >
+                  ...
+
+[00:16:19.816] Browser WARN    Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[00:16:26.232] Browser ERROR   Error fetching dashboard data: {"code":"ERR_NETWORK","config":{"adapter":["xhr","http","fetch"],"allowAbsoluteUrls":true,"baseURL":"http://localhost:8001/api","env":{},"headers":{"Accept":"application/json, text/plain, */*","Authorization":"Bearer dummy-token-1770353323321"},"maxBodyLength":-1,"maxContentLength":-1,"method":"get","params":{},"timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"/forms","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"Network Error","name":"AxiosError","stack":"AxiosError: Network Error\n    at XMLHttpRequest.handleError (https://studymode-enhance.preview.emergentagent.com/_next/static/chunks/9e883_0cbedc0e._.js:4377:25)\n    at Axios.request (https://studymode-enhance.preview.emergentagent.com/_next/static/chunks/9e883_0cbedc0e._.js:5135:49)\n    at async fetchDashboardData (https://studymode-enhance.preview.emergentagent.com/_next/static/chunks/frontend_src_301bbd84._.js:156:30)"}
+[00:16:26.232] Browser ERROR   Error fetching dashboard data: {"code":"ERR_NETWORK","config":{"adapter":["xhr","http","fetch"],"allowAbsoluteUrls":true,"baseURL":"http://localhost:8001/api","env":{},"headers":{"Accept":"application/json, text/plain, */*","Authorization":"Bearer dummy-token-1770353323321"},"maxBodyLength":-1,"maxContentLength":-1,"method":"get","params":{},"timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"/forms","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"Network Error","name":"AxiosError","stack":"AxiosError: Network Error\n    at XMLHttpRequest.handleError (https://studymode-enhance.preview.emergentagent.com/_next/static/chunks/9e883_0cbedc0e._.js:4377:25)\n    at Axios.request (https://studymode-enhance.preview.emergentagent.com/_next/static/chunks/9e883_0cbedc0e._.js:5135:49)\n    at async fetchDashboardData (https://studymode-enhance.preview.emergentagent.com/_next/static/chunks/frontend_src_301bbd84._.js:156:30)"}
+[00:16:41.235] Browser ERROR   Error fetching forms: {"code":"ERR_NETWORK","config":{"adapter":["xhr","http","fetch"],"allowAbsoluteUrls":true,"baseURL":"http://localhost:8001/api","env":{},"headers":{"Accept":"application/json, text/plain, */*","Authorization":"Bearer dummy-token-1770353338273"},"maxBodyLength":-1,"maxContentLength":-1,"method":"get","params":{},"timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"/forms","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"Network Error","name":"AxiosError","stack":"AxiosError: Network Error\n    at XMLHttpRequest.handleError (https://studymode-enhance.preview.emergentagent.com/_next/static/chunks/9e883_0cbedc0e._.js:4377:25)\n    at Axios.request (https://studymode-enhance.preview.emergentagent.com/_next/static/chunks/9e883_0cbedc0e._.js:5135:49)\n    at async fetchForms (https://studymode-enhance.preview.emergentagent.com/_next/static/chunks/frontend_src_7107a855._.js:161:30)"}
+[00:16:41.235] Browser ERROR   Error fetching liked forms: {"code":"ERR_NETWORK","config":{"adapter":["xhr","http","fetch"],"allowAbsoluteUrls":true,"baseURL":"http://localhost:8001/api","env":{},"headers":{"Accept":"application/json, text/plain, */*","Authorization":"Bearer dummy-token-1770353338273"},"maxBodyLength":-1,"maxContentLength":-1,"method":"get","timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"/likes/my-likes","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"Network Error","name":"AxiosError","stack":"AxiosError: Network Error\n    at XMLHttpRequest.handleError (https://studymode-enhance.preview.emergentagent.com/_next/static/chunks/9e883_0cbedc0e._.js:4377:25)\n    at Axios.request (https://studymode-enhance.preview.emergentagent.com/_next/static/chunks/9e883_0cbedc0e._.js:5135:49)\n    at async fetchLikedForms (https://studymode-enhance.preview.emergentagent.com/_next/static/chunks/frontend_src_7107a855._.js:174:30)"}
+[00:16:41.235] Browser ERROR   Error fetching forms: {"code":"ERR_NETWORK","config":{"adapter":["xhr","http","fetch"],"allowAbsoluteUrls":true,"baseURL":"http://localhost:8001/api","env":{},"headers":{"Accept":"application/json, text/plain, */*","Authorization":"Bearer dummy-token-1770353338273"},"maxBodyLength":-1,"maxContentLength":-1,"method":"get","params":{},"timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"/forms","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"Network Error","name":"AxiosError","stack":"AxiosError: Network Error\n    at XMLHttpRequest.handleError (https://studymode-enhance.preview.emergentagent.com/_next/static/chunks/9e883_0cbedc0e._.js:4377:25)\n    at Axios.request (https://studymode-enhance.preview.emergentagent.com/_next/static/chunks/9e883_0cbedc0e._.js:5135:49)\n    at async fetchForms (https://studymode-enhance.preview.emergentagent.com/_next/static/chunks/frontend_src_7107a855._.js:161:30)"}
+[00:16:41.235] Browser ERROR   Error fetching liked forms: {"code":"ERR_NETWORK","config":{"adapter":["xhr","http","fetch"],"allowAbsoluteUrls":true,"baseURL":"http://localhost:8001/api","env":{},"headers":{"Accept":"application/json, text/plain, */*","Authorization":"Bearer dummy-token-1770353338273"},"maxBodyLength":-1,"maxContentLength":-1,"method":"get","timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"/likes/my-likes","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"Network Error","name":"AxiosError","stack":"AxiosError: Network Error\n    at XMLHttpRequest.handleError (https://studymode-enhance.preview.emergentagent.com/_next/static/chunks/9e883_0cbedc0e._.js:4377:25)\n    at Axios.request (https://studymode-enhance.preview.emergentagent.com/_next/static/chunks/9e883_0cbedc0e._.js:5135:49)\n    at async fetchLikedForms (https://studymode-enhance.preview.emergentagent.com/_next/static/chunks/frontend_src_7107a855._.js:174:30)"}
+[00:16:50.491] Browser WARN    [2026-02-06T04:49:09.952Z]  @firebase/database: FIREBASE WARNING: Firebase error. Please ensure that you have the URL of your Firebase Realtime Database instance configured correctly. (https://demo-project-default-rtdb.firebaseio.com/) 
+[00:25:33.473] Server  LOG     ✓ Compiled in 452ms
+[00:25:42.423] Server  LOG     ✓ Compiled in 289ms
