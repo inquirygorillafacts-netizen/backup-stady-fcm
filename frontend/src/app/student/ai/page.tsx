@@ -670,7 +670,7 @@ export default function AIPage() {
       </div>
 
       {/* Modern ChatGPT-like Input Area */}
-      <div className="backdrop-blur-xl bg-white/70 dark:bg-gray-900/70 border-t border-gray-200/50 dark:border-gray-700/50 px-4 py-4 sticky bottom-0 z-10">
+      <div className="backdrop-blur-xl bg-white/70 dark:bg-gray-900/70 border-t border-gray-200/50 dark:border-gray-700/50 px-4 py-4 sticky bottom-0 z-20">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-end gap-2">
             {/* Main Input Container with Embedded Controls */}

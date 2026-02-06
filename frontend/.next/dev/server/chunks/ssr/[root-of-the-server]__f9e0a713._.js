@@ -1082,7 +1082,7 @@ function AIPage() {
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "backdrop-blur-xl bg-white/70 dark:bg-gray-900/70 border-t border-gray-200/50 dark:border-gray-700/50 px-4 py-4 sticky bottom-0 z-10",
+                className: "backdrop-blur-xl bg-white/70 dark:bg-gray-900/70 border-t border-gray-200/50 dark:border-gray-700/50 px-4 py-4 sticky bottom-0 z-20",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$frontend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "max-w-3xl mx-auto",
                     children: [
